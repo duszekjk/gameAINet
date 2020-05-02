@@ -10,7 +10,7 @@ def init():
     global names
     global states
     global className
-    names = ['up', 'down', 'right', 'left', 'c', 'l', 'k']
+    names = ['up', 'down', 'right', 'left', 'r', 'space', 'k']
 def states():
     global names
     statesArray = []
@@ -36,6 +36,6 @@ def className(textBefore = "", textAfter = ".png"):
         os.makedirs(statesString)
     except OSError:
         print ("error saving")
-    statesString += "/"
-    statesString += ''.join(random.choices(string.ascii_uppercase + string.digits, k=32))
+#    statesString += "/"
+#    statesString += ''.join(random.choices(string.ascii_uppercase + string.digits, k=32))
     return textBefore + statesString + textAfter

@@ -2,7 +2,7 @@ from keras.models import Sequential
 import os
 from os import listdir
 from os.path import isfile, join
-
+os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
 def init():
     global batch_size
     global maxEpochSize
@@ -25,11 +25,11 @@ def init():
     global historyAvg
     
     
-    batch_size = 96
+    batch_size = 128
     num_classes = 1000.0#len(listdir(directory))
-    epochs = 135
+    epochs = 70
     data_augmentation = False
-    maxEpochSize = 700
+    maxEpochSize = 5000
     
     
     save_dir = os.path.join('/Users/jacekkaluzny/Documents/🛍moje programy/gameAINet', 'saved_models')
@@ -47,8 +47,9 @@ def init():
                 directory = '/Users/jacekkaluzny/Pictures/carGame2/photos/'
 
 #    directory = '/Volumes/Flash⚡️/carGame2/photos'
-    directoryval = directory+'val'
+    directoryval = directory+'val/'
     directorytest = directory+'val'
+    directory = directory+'train/'
 
     
     model_name = 'selfDrivingFastE.h5'
