@@ -102,7 +102,7 @@ def drive():
     if(images_old_start):
         timeStart = time.time()
         prediction = model.predict(images,verbose=1)
-        prediction = (2.0*predictionlast + prediction)/3.0
+#        prediction = (2.0*predictionlast + prediction)/3.0
         predictionlast = prediction
         timeEnd = time.time()
         timechange = time.time() - timelast
@@ -126,13 +126,18 @@ def pressKey(predictionl):
     global lle
     frameNow = nrOfFrame
     próg = 50.0
+    i = 0.0
     while(frameNow == nrOfFrame):
-        prediction = predictionl
+        if i <= 8.0:
+            prediction = [[(predictionl[0][0]*(8-i)+predictionl[0][2]*i)/8.0, (predictionl[0][1]*(8-i)+predictionl[0][3]*i)/8.0],]
+        else:
+            prediction = [[predictionl[0][2], predictionl[0][3]],]
+        i += 1.0
 #        prediction[0][1] -= 0.3
         if(random.getrandbits(1)):
-            próg = (1.0*random.randint(35, 65))/100.0
+            próg = (1.0*random.randint(30, 99))/100.0
         else:
-            próg = (1.0*random.randint(45, 55))/100.0
+            próg = (1.0*random.randint(40, 90))/100.0
 #        nkr += 1
         newPressedKeys = np.array([0, 0, 0, 0, 0, 0, 0])
 #        for p in range(0, len(prediction[0])):

@@ -25,7 +25,7 @@ def init():
     global historyAvg
     
     
-    batch_size = 128
+    batch_size = 256
     num_classes = 1000.0#len(listdir(directory))
     epochs = 70
     data_augmentation = False
@@ -35,8 +35,8 @@ def init():
     save_dir = os.path.join('/Users/jacekkaluzny/Documents/🛍moje programy/gameAINet', 'saved_models')
     saveNow = 0
     
-    if(os.path.exists("/Volumes/Flash⚡️/icon.ICNS") and os.path.isfile("/Volumes/Flash⚡️/icon.ICNS")):
-        directory = '/Volumes/Flash⚡️/carGame2/photos/'
+    if(os.path.exists("/Volumes/NN/network-50.icns") and os.path.isfile("/Volumes/NN/network-50.icns")):
+        directory = '/Volumes/NN/car/carGame2/photos/'
     else:
         if(os.path.exists("/Volumes/Flash⚡️ 1/icon.ICNS") and os.path.isfile("/Volumes/Flash⚡️ 1/icon.ICNS")):
             directory = '/Volumes/Flash⚡️ 1/carGame2/photos/'
