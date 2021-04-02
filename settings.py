@@ -48,7 +48,7 @@ def init():
 
 #    directory = '/Volumes/Flash⚡️/carGame2/photos'
     directoryval = directory+'val/'
-    directorytest = directory+'val'
+    directorytest = directory+'test/'
     directory = directory+'train/'
 
     

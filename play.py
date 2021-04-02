@@ -18,7 +18,9 @@ import settings
 settings.init()
 from keras.models import load_model
 from keras.preprocessing.image import load_img
+from keras.preprocessing.image import img_to_array
 from keras.preprocessing import image
+from PIL import Image
 import keras
 import numpy as np
 from keras import backend as K
@@ -66,58 +68,51 @@ def drive():
     global lle
     global timelast
     global predictionlast
-#    screen = ImageGrab.grab()
-
-    sct = mss()
-    sct_img = sct.grab(sct.monitors[1])
+    path = "/Users/jacekkaluzny/Documents/carai/"
     timeA = time.time()
-    screen = Image.frombytes("RGB", sct_img.size, sct_img.bgra, "raw", "BGRX")
+    waiting = True
+    while waiting:
+        files = os.listdir(path)
+        for file in files:
+            if file[-3:] == "png":
+                time.sleep(0.03)
+                images = load_img(path+file, target_size=(128, 205))
+                os.remove(path+file)
+                waiting = False
+                break
+        time.sleep(0.01)
+            
     timeB = time.time()
-    screen = screen.resize((205, 128), resample=PIL.Image.BICUBIC)
-    timeC = time.time()
-#        time.sleep(0.01)
-#        screen.save(settings.save_dir+"/lastframe"+str(random.randint(0, 60))+".png")
-#        print("screen saved", time.time(), sct_img.size, screen.size)
     
-    if(nrOfFrame%30 == 0):
-        for key in keys.names:
-            keyboard.release(key)
-        lastPressedKeys = np.array([0, 0, 0, 0, 0, 0, 0])
-
+    image = img_to_array(images)
+    image = image.reshape((1, image.shape[0], image.shape[1], image.shape[2]))
+    image = preprocess_input(image)
     
-    
-    x = image.img_to_array(screen)[:, :, :3]
-    x = np.expand_dims(x, axis=0)
-    images = x
-#    imgprev = Image.fromarray(images[0,:, :, :].astype(np.uint8), 'RGB')
-#    imgprev.save('/Users/jacekkaluzny/Pictures/aug/aplaya'+str(random.randint(10000, 99999))+'.png')
-#    images = np.vstack([x])
-#    image = load_img(screen)
-    images = preprocess_input(images)
-    images /= 255.0
+    image /= 255.0
     
     timeD = time.time()
-    print("screenshot: ", timeB-timeA, timeC-timeB, timeD-timeC)
-#    classes = model.predict_classes(images, batch_size=1)
-    if(images_old_start):
-        timeStart = time.time()
-        prediction = model.predict(images,verbose=1)
+    print("screenshot: ", timeB-timeA)
+    
+    timeStart = time.time()
+    prediction = model.predict(image,verbose=1)
 #        prediction = (2.0*predictionlast + prediction)/3.0
-        predictionlast = prediction
-        timeEnd = time.time()
-        timechange = time.time() - timelast
-        timelast = time.time()
-        print("------------------------------------------------------------------------------------------")
-        print("\t\t", prediction, "\t\t\t in time: ", timeEnd-timeStart ," frame time:",timechange)
-        print("------------------------------------------------------------------------------------------")
-        beep()
-        nrOfFrame += 1
-    else:
-        images_old_start = True
-        timelast = time.time()
-#    images_old = images
-    thread1 = threading.Thread(target = pressKey, args = (prediction, ))
-    thread1.start()
+    predictionlast = prediction
+    timeEnd = time.time()
+    timechange = time.time() - timelast
+    timelast = time.time()
+    predictionString = ""
+    for p in prediction[0]:
+        predictionString += str(p)+","
+    print("------------------------------------------------------------------------------------------")
+    print("\t\t", predictionString, "\t\t\t in time: ", timeEnd-timeStart ," frame time:",timechange)
+    print("------------------------------------------------------------------------------------------")
+#    beep()
+    nrOfFrame += 1
+    saveFile = open("/Users/jacekkaluzny/Documents/carai/action.txt", "w+")
+    saveFile.write(predictionString)
+    saveFile.close()
+#    thread1 = threading.Thread(target = pressKey, args = (prediction, ))
+#    thread1.start()
 def pressKey(predictionl):
     global lastPressedKeys
     global nrOfFrame
@@ -235,16 +230,16 @@ beep()
 threads = []
 #os.system("./gameAINet.xcodeproj/CARLA_0.8.2/CarlaUE4.sh")
 while(1):
-#    driveMode = True
+    driveMode = True
     if driveMode:
         print("d")
 #        drive(rr)
         thread = threading.Thread(target=drive)
         threads.append(thread)
-        while(len(threads) > 3):
+        while(len(threads) > 1):
             threads[0].join()
             threads.pop(0)
-        time.sleep(0.10)
+        time.sleep(0.01)
         print("threads: ", len(threads))
         thread.start()
     else:
